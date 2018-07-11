@@ -1,7 +1,11 @@
 using System;
 using System.ComponentModel;
+using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform;
+using Xamarin.Forms.StyleSheets;
+
+[assembly: StyleProperty("-xf-editor-placeholder", typeof(Editor), nameof(Editor.Placeholder))]
 
 namespace Xamarin.Forms
 {

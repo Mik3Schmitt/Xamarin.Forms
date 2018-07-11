@@ -1,8 +1,12 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
+using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform;
+using Xamarin.Forms.StyleSheets;
+
+[assembly: StyleProperty("-xf-entry-placeholder", typeof(Entry), nameof(Entry.Placeholder))]
 
 namespace Xamarin.Forms
 {
