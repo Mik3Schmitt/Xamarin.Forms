@@ -5,7 +5,7 @@ using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform;
 using Xamarin.Forms.StyleSheets;
 
-[assembly: StyleProperty("-xf-progressbar-color", typeof(ProgressBar), nameof(ProgressBar.ProgressColorProperty))]
+[assembly: StyleProperty("-xf-progressbar-progress-color", typeof(ProgressBar), nameof(ProgressBar.ProgressColorProperty))]
 
 namespace Xamarin.Forms
 {

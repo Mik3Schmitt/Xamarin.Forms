@@ -5,7 +5,9 @@ using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform;
 using Xamarin.Forms.StyleSheets;
 
-[assembly: StyleProperty("-xf-editor-placeholder", typeof(Editor), nameof(Editor.Placeholder))]
+[assembly: StyleProperty("-xf-editor-text-color", typeof(Editor), nameof(Editor.TextColorProperty))]
+[assembly: StyleProperty("-xf-editor-placeholder", typeof(Editor), nameof(Editor.PlaceholderProperty))]
+[assembly: StyleProperty("-xf-editor-placeholder-color", typeof(Editor), nameof(Editor.PlaceholderColorProperty))]
 
 namespace Xamarin.Forms
 {

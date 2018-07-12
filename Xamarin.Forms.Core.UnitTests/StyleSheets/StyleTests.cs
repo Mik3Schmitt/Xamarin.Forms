@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
-
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using NUnit.Framework;
 
 using Xamarin.Forms.Core.UnitTests;
@@ -97,6 +99,92 @@ namespace Xamarin.Forms.StyleSheets.UnitTests
 			};
 			app.MainPage = page;
 			Assert.That((page.Content as Label).TextColor, Is.EqualTo(Color.Red));
+		}
+
+		public string ToVenderSpecificCss(Type type, string property)
+		{
+			var sb = new StringBuilder();
+			sb.Append(Char.ToLower(property[0]));
+
+			for (var i = 1; i < property.Length; i ++)
+			{
+				var c = property[i];
+				var lower = Char.ToLower(c);
+				if (c != lower)
+					sb.Append('-');
+				sb.Append(lower);
+			}
+
+			var cssProperty = sb.ToString();
+			return $"-xf-{ type.Name.ToLower()}-{cssProperty}";
+		}
+
+		public object ApplyVenderSpecificCssValue(
+			Type type, string property, string value)
+		{
+			var app = new MockApplication();
+
+			var css = $"{type.Name} {{ {ToVenderSpecificCss(type, property)}: {value}; }}";
+			app.Resources.Add(StyleSheet.FromString(css));
+
+			var assembly = typeof(View).Assembly;
+			var page = new ContentPage
+			{
+				Content = (View)Activator.CreateInstance(type, nonPublic: true)
+			};
+			app.MainPage = page;
+
+			var bf = BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance;
+			return type.InvokeMember(property, bf, null, page.Content, null);
+		}
+
+		[
+			TestCase(typeof(BoxView), nameof(BoxView.Color)),
+			TestCase(typeof(ActivityIndicator), nameof(ActivityIndicator.Color)),
+			TestCase(typeof(ProgressBar), nameof(ProgressBar.ProgressColor)),
+			TestCase(typeof(Entry), new[] {
+				nameof(Entry.TextColor),
+				nameof(Entry.PlaceholderColor),
+				nameof(Editor.Placeholder)
+			}),
+			TestCase(typeof(Editor), new[] {
+				nameof(Editor.TextColor),
+				nameof(Editor.PlaceholderColor),
+				nameof(Editor.Placeholder)
+			}),
+			TestCase(typeof(InputView), new[] {
+				nameof(InputView.MaxLength),
+				// nameof(InputView.Keyboard), Enum support?
+			}),
+			TestCase(typeof(StackLayout), new[] {
+				nameof(StackLayout.Spacing),
+			}),
+			TestCase(typeof(Grid), new[] {
+				nameof(Grid.RowSpacing),
+				nameof(Grid.ColumnSpacing),
+			}),
+		]
+		public void GreenVenderSpecificStyleSheetsAreApplied(Type type, object propertyOrArray)
+		{
+			if (propertyOrArray is string)
+				propertyOrArray = new[] { propertyOrArray };
+
+			var values = new[] {
+				new { type = typeof(Color), css = "limegreen", result = (object)Color.LimeGreen },
+				new { type = typeof(string), css = "your name here", result = (object)"your name here" },
+				new { type = typeof(int), css = "16", result = (object)16 },
+				new { type = typeof(double), css = "4.2", result = (object)4.2d },
+				new { type = typeof(Keyboard), css = "telephone", result = (object)Keyboard.Telephone },
+			}.ToDictionary(o => o.type);
+
+			foreach (string property in propertyOrArray as object[]) {
+				var element = Activator.CreateInstance(type, nonPublic: true);
+				var bp = ((IStylable)element).GetProperty(ToVenderSpecificCss(type, property), false);
+				var value = values[bp.ReturnType];
+
+				var result = ApplyVenderSpecificCssValue(type, property, value.css);
+				Assert.That(result, Is.EqualTo(value.result));
+			}
 		}
 	}
 }

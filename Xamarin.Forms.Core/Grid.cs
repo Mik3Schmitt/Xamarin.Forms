@@ -7,8 +7,8 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.StyleSheets;
 
-[assembly: StyleProperty("-xf-grid-row-spacing", typeof(Grid), nameof(Grid.RowSpacing))]
-[assembly: StyleProperty("-xf-grid-column-spacing", typeof(Grid), nameof(Grid.ColumnSpacing))]
+[assembly: StyleProperty("-xf-grid-row-spacing", typeof(Grid), nameof(Grid.RowSpacingProperty))]
+[assembly: StyleProperty("-xf-grid-column-spacing", typeof(Grid), nameof(Grid.ColumnSpacingProperty))]
 
 namespace Xamarin.Forms
 {

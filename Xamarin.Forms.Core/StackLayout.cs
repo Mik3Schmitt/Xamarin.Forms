@@ -4,7 +4,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.StyleSheets;
 
-[assembly: StyleProperty("-xf-spacing", typeof(StackLayout), nameof(StackLayout.Spacing))]
+[assembly: StyleProperty("-xf-stacklayout-spacing", typeof(StackLayout), nameof(StackLayout.SpacingProperty))]
 
 namespace Xamarin.Forms
 {
